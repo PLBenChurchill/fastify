@@ -8,8 +8,6 @@ const uri =
   "mongodb://mongo:ZdabZuYZ14fIKyxcL1F8@containers-us-west-72.railway.app:7612";
 const client = new MongoClient(uri);
 
-
-
 server.get("/", async (request: FastifyRequest<any>, reply) => {
   reply.code(200).send({ hello: "world" });
 });
@@ -30,7 +28,10 @@ server.get('/user/:userId', async (request: FastifyRequest<any>, reply) => {
   const user = await client.db('test').collection('users').findOne({
     _id: userId,
   });
-  reply.code(200).send(user);
+  reply.code(200).send({
+    found: user,
+    requested: userId
+  });
 });
 
 server.listen(process.env.PORT || 8080, "0.0.0.0", (err, address) => {
