@@ -25,7 +25,7 @@ server.put("/user", async (request: FastifyRequest<any>, reply) => {
   reply.code(201).send({ message: "user created" });
 });
 
-server.get('user/:userId', async (request: FastifyRequest<any>, reply) => {
+server.get('/user/:userId', async (request: FastifyRequest<any>, reply) => {
   const userId = request.params.userId;
   const user = await client.db('test').collection('users').findOne({
     _id: userId,
