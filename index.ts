@@ -10,12 +10,27 @@ const client = new MongoClient(uri);
 
 
 
-server.get("/", async (request: FastifyRequest, reply) => {
-  const response = await client.db('test').collection('users').insertOne({
-    name: 'test'
-  })
+server.get("/", async (request: FastifyRequest<any>, reply) => {
+  reply.code(200).send({ hello: "world" });
+});
 
-  reply.code(200).send({ message: "Hello world!", response, });
+server.put("/user", async (request: FastifyRequest<any>, reply) => {
+  if (!request?.body?.email) {
+    reply.code(400).send({ error: "missing email from body" });
+  }
+
+  await client.db('test').collection('users').insertOne({
+    email: request.body.email,
+  })
+  reply.code(201).send({ message: "user created" });
+});
+
+server.get('user/:userId', async (request: FastifyRequest<any>, reply) => {
+  const userId = request.params.userId;
+  const user = await client.db('test').collection('users').findOne({
+    _id: userId,
+  });
+  reply.code(200).send(user);
 });
 
 server.listen(process.env.PORT || 8080, "0.0.0.0", (err, address) => {
