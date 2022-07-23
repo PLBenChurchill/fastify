@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import fastify, { FastifyRequest } from "fastify";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const server = fastify();
 // Replace the uri string with your connection string.
@@ -26,7 +26,7 @@ server.put("/user", async (request: FastifyRequest<any>, reply) => {
 server.get('/user/:userId', async (request: FastifyRequest<any>, reply) => {
   const userId = request.params.userId;
   const user = await client.db('test').collection('users').findOne({
-    _id: userId,
+    _id: new ObjectId(userId)
   });
   reply.code(200).send({
     found: user,
